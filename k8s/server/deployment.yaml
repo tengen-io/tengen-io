@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: server
+  template:
+    spec:
+      containers:
+      - name: server
+        image: gcr.io/tengen-io/server:latest
+        env:
+          - name: TENGEN_ENV
+            value: production
+          - name: TENGEN_DB_HOST
+            value: prod-postgres-postgresql
+          - name: TENGEN_DB_USER
+            value: tengen
+          - name: TENGEN_DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: prod-postgres-postgresql
+                key: postgresql-password
+          - name: TENGEN_JWT_SECRET_KEY
+            valueFrom:
+              secretKeyRef:
+                name: prod-tengen-io
+                key: jwtSecret
+        ports:
+          - containerPort: 8080

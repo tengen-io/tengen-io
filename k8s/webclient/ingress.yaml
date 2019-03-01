@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: webclient
+  namespace: production
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    certmanager.k8s.io/cluster-issuer: letsencrypt-production
+spec:
+  rules:
+  - host: tengen.io
+    http:
+      paths:
+      - backend:
+          serviceName: tengen-webclient
+          servicePort: 80
+  tls:
+  - hosts:
+    - tengen.io
+    secretName: webserver-tengen-io-tls

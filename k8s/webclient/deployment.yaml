@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webclient
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webclient
+  template:
+    spec:
+      containers:
+        - name: webclient
+          image: gcr.io/tengen-io/webclient:latest
+          ports:
+          - containerPort: 80
