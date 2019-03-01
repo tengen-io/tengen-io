@@ -1,0 +1,44 @@
+version: "3.7"
+services:
+  web:
+    build: ./web-client
+    image: tengen-io/web-client:latest
+    ports:
+      - "8080:80"
+    environment:
+      REACT_APP_API_URI: "http://api:8180"
+    networks:
+      - internal
+    depends_on:
+      - api
+  api:
+    build: ./server
+    image: tengen-io/server:latest
+    environment:
+      TENGEN_HOST: 0.0.0.0
+      TENGEN_PORT: 8080
+      TENGEN_DB_HOST: db
+    networks:
+      - internal
+    depends_on:
+      - db
+    ports:
+      - "8180:8080"
+  db:
+    image: postgres:11
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tengen
+    networks:
+      - internal
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+
+networks:
+  internal:
+
+volumes:
+  db:
